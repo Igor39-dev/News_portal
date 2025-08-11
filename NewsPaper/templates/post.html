@@ -1,10 +1,16 @@
-{% extends 'flatpages/default.html' %} 
- 
+{% extends 'flatpages/default.html' %}
+{% load my_filters %}
+
 {% block title %}
-Post
+    {{ post.title }} 
 {% endblock title %}
- 
+
 {% block content %}
-<h1>Одна новость</h1>
-{{ post }}
+<!-- использую фильтр -->
+    <h1>{{ post.title|censor }}</h1>
+    <p><em>Дата публикации: {{ post.time_create|date:"d.m.Y H:i" }}</em></p>
+    <div>
+        {{ post.text|censor|linebreaks }}
+    </div>
 {% endblock content %}
+
