@@ -1,0 +1,30 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Поиск новостей
+{% endblock title %}
+
+{% block content %}
+<h1>Поиск новостей</h1>
+
+<form method="get">
+    {{ filterset.form.as_p }}
+    <button type="submit">Искать</button>
+</form>
+
+<hr>
+
+<!-- Список отфильтрованных новостей -->
+<ul>
+    {% for post in posts %}
+        <li>
+            <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a>
+            <br>
+            Автор: {{ post.author.user.username }} | Дата: {{ post.time_create|date:"d.m.Y H:i" }}
+        </li>
+    {% empty %}
+        <li>Результаты не найдены</li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
