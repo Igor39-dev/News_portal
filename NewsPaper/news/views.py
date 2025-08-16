@@ -1,8 +1,10 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 from .models import Post
 from datetime import datetime
 from .filters import PostFilter
+from .forms import PostForm
 
 # Create your views here.
 class PostListView(ListView):
@@ -41,3 +43,48 @@ class NewsSearchView(ListView):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         return context
+    
+class NewsCreateView(CreateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'news_edit.html'
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.post_type = Post.NEWS
+        return super().form_valid(form)
+    
+class NewsUpdateView(UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'news_edit.html'
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.post_type = Post.NEWS
+        return super().form_valid(form)
+    
+class NewsDeleteView(DeleteView):
+    model = Post
+    template_name = 'news_delete.html'
+    success_url = reverse_lazy('post_list')
+
+class ArticleCreateView(CreateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'news_edit.html'
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.post_type = Post.ARTICLE
+        return super().form_valid(form)
+    
+class ArticleUpdateView(UpdateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'news_edit.html'
+
+class ArticleDeleteView(DeleteView):
+    model = Post
+    template_name = 'news_delete.html'
+    success_url = reverse_lazy('post_list')

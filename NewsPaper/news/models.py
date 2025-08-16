@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 # Create your models here.
 
@@ -57,6 +58,9 @@ class Post(models.Model):
     
     def preview(self):
         return self.text[:124] + '...'
+    
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):
@@ -64,7 +68,7 @@ class PostCategory(models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.post.title} — {self.сategory.name}'
+        return f'{self.post.title} — {self.category.name}'
     
 class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)

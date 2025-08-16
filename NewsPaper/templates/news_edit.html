@@ -1,0 +1,32 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+  {% if form.instance.pk %}
+    Редактирование
+  {% else %}
+    {% if request.path|slice:":9" == "/articles" %}
+      Создание статьи
+    {% else %}
+      Создание новости
+    {% endif %}
+  {% endif %}
+{% endblock title %}
+
+{% block content %}
+  <h1>
+    {% if form.instance.pk %}
+      Редактирование
+    {% else %}
+      {% if request.path|slice:":9" == "/articles" %}
+        Создать статью
+      {% else %}
+        Создать новость
+      {% endif %}
+    {% endif %}
+  </h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+  </form>
+{% endblock content %}
