@@ -1,0 +1,16 @@
+{% extends "main.html" %}
+{% load socialaccount %}
+
+{% block content %}
+<h2>Вход</h2>
+
+<form method="post" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Войти">
+</form>
+<p>Нет аккаунта? <a href="{% url 'account_signup' %}">Зарегистрироваться</a></p>
+
+<p>Войти через Yandex:</p>
+<a href="{% provider_login_url 'yandex' %}">Yandex</a>
+{% endblock %}

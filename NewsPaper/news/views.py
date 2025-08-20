@@ -5,6 +5,7 @@ from .models import Post
 from datetime import datetime
 from .filters import PostFilter
 from .forms import PostForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 class PostListView(ListView):
@@ -54,7 +55,7 @@ class NewsCreateView(CreateView):
         post.post_type = Post.NEWS
         return super().form_valid(form)
     
-class NewsUpdateView(UpdateView):
+class NewsUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = 'news_edit.html'
@@ -79,7 +80,7 @@ class ArticleCreateView(CreateView):
         post.post_type = Post.ARTICLE
         return super().form_valid(form)
     
-class ArticleUpdateView(UpdateView):
+class ArticleUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'news_edit.html'
