@@ -5,7 +5,7 @@ from .models import Post
 from datetime import datetime
 from .filters import PostFilter
 from .forms import PostForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 # Create your views here.
 class PostListView(ListView):
@@ -45,7 +45,9 @@ class NewsSearchView(ListView):
         context['filterset'] = self.filterset
         return context
     
-class NewsCreateView(CreateView):
+class NewsCreateView(PermissionRequiredMixin, CreateView):
+    # добавление ограничения
+    permission_required = ('news.add_post')
     form_class = PostForm
     model = Post
     template_name = 'news_edit.html'
@@ -55,7 +57,9 @@ class NewsCreateView(CreateView):
         post.post_type = Post.NEWS
         return super().form_valid(form)
     
-class NewsUpdateView(LoginRequiredMixin, UpdateView):
+class NewsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    # добавление ограничения
+    permission_required = ('news.change_post')
     model = Post
     form_class = PostForm
     template_name = 'news_edit.html'
@@ -70,7 +74,9 @@ class NewsDeleteView(DeleteView):
     template_name = 'news_delete.html'
     success_url = reverse_lazy('post_list')
 
-class ArticleCreateView(CreateView):
+class ArticleCreateView(PermissionRequiredMixin, CreateView):
+    # добавление ограничения
+    permission_required = ('news.add_post')
     form_class = PostForm
     model = Post
     template_name = 'news_edit.html'
@@ -80,7 +86,9 @@ class ArticleCreateView(CreateView):
         post.post_type = Post.ARTICLE
         return super().form_valid(form)
     
-class ArticleUpdateView(LoginRequiredMixin, UpdateView):
+class ArticleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    # добавление ограничения
+    permission_required = ('news.change_post')
     form_class = PostForm
     model = Post
     template_name = 'news_edit.html'

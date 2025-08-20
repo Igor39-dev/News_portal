@@ -154,4 +154,5 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-ACCOUNT_SIGNUP_FORM_CLASS = 'sign.forms.CustomSignupForm'
+
+ACCOUNT_FORMS = {'signup': 'sign.forms.CustomSignupForm'}

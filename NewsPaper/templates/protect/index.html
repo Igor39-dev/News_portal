@@ -5,9 +5,11 @@
 <div> Здесь может содержаться персональная информация для каждого пользователя </div>
 
 {% if user.is_authenticated and not is_author %}
-    <a href="{% url 'become_author' %}" class="btn">Стать автором</a>
+<form method="post" action="{% url 'become_author' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn">Стать автором</button>
+</form>
 {% endif %}
-
 
 <form method="post" action="{% url 'logout' %}">
     {% csrf_token %}
