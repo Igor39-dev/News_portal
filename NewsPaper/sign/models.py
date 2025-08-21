@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django import forms
 
 class BaseRegisterForm(UserCreationForm):
@@ -18,3 +18,9 @@ class BaseRegisterForm(UserCreationForm):
                   "email", 
                   "password1", 
                   "password2", )
+        
+    def save(self, *args, **kwargs):
+        user = super(BaseRegisterForm, self).save(*args, **kwargs)
+        common_group = Group.objects.get(name='common')
+        common_group.user_set.add(user)
+        return user
