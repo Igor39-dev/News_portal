@@ -1,11 +1,15 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import Post
+from .models import Category, Post
 from datetime import datetime
 from .filters import PostFilter
 from .forms import PostForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 class PostListView(ListView):
@@ -97,3 +101,25 @@ class ArticleDeleteView(DeleteView):
     model = Post
     template_name = 'news_delete.html'
     success_url = reverse_lazy('post_list')
+
+
+@login_required
+def subscribe_to_category(request, pk):
+    category = get_object_or_404(Category, id=pk)
+    user = request.user
+    if user in category.subscribers.all():
+        category.subscribers.remove(user)
+    else:
+        category.subscribers.add(user)
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def test_send_email(request):
+    send_mail(
+        subject='Тестовое письмо',
+        message='Привет! Это тест.',
+        from_email='gorokhov-igor.g@yandex.ru',
+        recipient_list=['19gorokhov90@gmail.com'],
+    )
+    return HttpResponse("Письмо отправлено!")

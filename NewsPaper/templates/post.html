@@ -12,5 +12,22 @@
     <div>
         {{ post.text|censor|linebreaks }}
     </div>
+
+{% for category in post.categories.all %}
+  {% if user.is_authenticated %}
+    <form action="{% url 'subscribe' category.id %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit">
+        {% if user in category.subscribers.all %}
+          Вы подписаны на {{ category.name }}
+        {% else %}
+          Подписаться на {{ category.name }}
+        {% endif %}
+      </button>
+    </form>
+  {% endif %}
+{% endfor %}
+
+
 {% endblock content %}
 
