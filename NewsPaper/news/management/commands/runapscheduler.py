@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 
-from NewsPaper.news.models import Category, Post
+from news.models import Category, Post
 from datetime import datetime
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -21,7 +21,7 @@ def my_job():
     #  Your job processing logic here... 
     today = datetime.datetime.now()
     last_week = today - datetime.timedelta(days=7)
-    posts = Post.objects.filter(created_at__gte=last_week)
+    posts = Post.objects.filter(time_create__gte=last_week)
     categories = set(posts.values_list('category__name', flat=True))
     subscribers = set(Category.objects.filter(name__in=categories).values_list('subscribers__email', flat=True))
  
