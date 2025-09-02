@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_filters',
+    'django_celery_beat',
         # allauth apps
     'allauth',
     'allauth.account',
