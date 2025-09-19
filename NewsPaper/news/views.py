@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.cache import cache
 
 # Create your views here.
 class PostListView(ListView):
@@ -31,6 +32,15 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'post.html'
     context_object_name = 'post'
+
+    def get_object(self, queryset=None):
+        post_id = self.kwargs['pk']
+        cache_key = f'post_{post_id}'
+        obj = cache.get(cache_key)
+        if not obj:
+            obj = super().get_object(queryset=queryset)
+            cache.set(cache_key, obj)
+        return obj
 
 # страница для поиска новостей /news/search
 class NewsSearchView(ListView):

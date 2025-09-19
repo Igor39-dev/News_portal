@@ -13,6 +13,7 @@
     </head>
     <body>
         <!-- Responsive navbar-->
+        {% cache 600 navbar %}
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
                 <a class="navbar-brand" href="#">Start Bootstrap</a>
@@ -34,6 +35,7 @@
                 </div>
             </div>
         </nav>
+        {% endcache %}
         <!-- Page content-->
         <div class="container">
             <div class="row">

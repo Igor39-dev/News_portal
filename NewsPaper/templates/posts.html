@@ -1,6 +1,6 @@
 {% extends 'flatpages/default.html' %}
 {% load my_filters %}
-
+{% load cache %}
 
 {% block title %}
     Все новости
@@ -8,7 +8,10 @@
 
 {% block content %}
     <h1>Все новости ({{ posts|length }})</h1>
+
+    {% cache 100 posts_list page_obj.number %}
     <ul>
+        
         {% for post in posts %}
             <li>
                 <!-- использую фильтр -->
@@ -20,6 +23,7 @@
             <li>Новостей пока нет.</li>
         {% endfor %}
     </ul>
+    {% endcache %}
 
     {# Пагинация #}
     {% if page_obj.has_previous %}

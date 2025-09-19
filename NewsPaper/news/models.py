@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
-
+from django.core.cache import cache
 # Create your models here.
 
 class Author(models.Model):
@@ -45,6 +45,17 @@ class Post(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
     rating = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # удалить кэш, если статья обновилась
+        cache_key = f'post_{self.id}'
+        cache.delete(cache_key)
+
+    def delete(self, *args, **kwargs):
+        cache_key = f'post_{self.id}'
+        cache.delete(cache_key)
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return f'{self.title} ({self.get_post_type_display()})'
