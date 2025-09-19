@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import logging
+from django.utils.log import RequireDebugTrue, RequireDebugFalse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -162,6 +164,7 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 ACCOUNT_FORMS = {'signup': 'sign.forms.CustomSignupForm'}
 
+ADMINS = [('Igor', '19gorokhov90@gmail.com'),]
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
@@ -184,5 +187,114 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+    }
+}
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+
+    'formatters': {
+        'console_debug': {
+            '()': 'logging.Formatter',
+            'format': '%(asctime)s [%(levelname)s] %(message)s',
+        },
+        'console_warning': {
+            '()': 'logging.Formatter',
+            'format': '%(asctime)s [%(levelname)s] %(pathname)s: %(message)s',
+        },
+        'console_error': {
+            '()': 'logging.Formatter',
+            'format': '%(asctime)s [%(levelname)s] %(pathname)s: %(message)s %(exc_info)s',
+        },
+        'file_general': {
+            'format': '%(asctime)s [%(levelname)s] %(module)s: %(message)s',
+        },
+        'file_errors': {
+            'format': '%(asctime)s [%(levelname)s] %(pathname)s: %(message)s %(exc_info)s',
+        },
+        'file_security': {
+            'format': '%(asctime)s [%(levelname)s] %(module)s: %(message)s',
+        },
+        'mail_errors': {
+            'format': '%(asctime)s [%(levelname)s] %(pathname)s: %(message)s',
+        },
+    },
+
+    'handlers': {
+        'console_debug': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_debug',
+            'filters': ['require_debug_true'],
+        },
+        'file_general': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'general.log'),
+            'formatter': 'file_general',
+            'filters': ['require_debug_false'],
+        },
+        'file_errors': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'errors.log'),
+            'formatter': 'file_errors',
+        },
+        'file_security': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'security.log'),
+            'formatter': 'file_security',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'mail_errors',
+            'filters': ['require_debug_false'],
+        },
+    },
+
+    'loggers': {
+        'django': {
+            'handlers': ['console_debug', 'file_general'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['file_errors', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['file_errors', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.template': {
+            'handlers': ['file_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['file_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['file_security'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     }
 }
